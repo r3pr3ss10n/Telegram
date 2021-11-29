@@ -32,6 +32,7 @@ import org.telegram.messenger.Emoji;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
+import org.telegram.messenger.UserObject;
 import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
@@ -44,6 +45,7 @@ import org.telegram.ui.Components.AnimatedEmojiDrawable;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.CheckBox2;
+import org.telegram.ui.Components.Bulletin;
 import org.telegram.ui.Components.CheckBoxSquare;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
@@ -69,6 +71,7 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
     private AnimatedEmojiDrawable.SwapAnimatedEmojiDrawable emojiStatus;
     private ImageView closeView;
     protected Theme.ResourcesProvider resourcesProvider;
+    private ImageView mutualView;
 
     protected AvatarDrawable avatarDrawable;
     private boolean storiable;
@@ -110,18 +113,18 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
     protected long dialogId;
 
     public UserCell(Context context, int padding, int checkbox, boolean admin) {
-        this(context, padding, checkbox, admin, false, null);
+        this(context, padding, checkbox, admin, false, false);
     }
 
     public UserCell(Context context, int padding, int checkbox, boolean admin, Theme.ResourcesProvider resourcesProvider) {
-        this(context, padding, checkbox, admin, false, resourcesProvider);
+        this(context, padding, checkbox, admin,  false,false);
     }
 
     public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton) {
-        this(context, padding, checkbox, admin, needAddButton, null);
+        this(context, padding, checkbox, admin, needAddButton, false);
     }
 
-    public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton, Theme.ResourcesProvider resourcesProvider) {
+    public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton, boolean needMutualIcon) {
         super(context);
         this.resourcesProvider = resourcesProvider;
 
@@ -212,6 +215,16 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
             adminTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
             adminTextView.setTextColor(Theme.getColor(Theme.key_profile_creatorIcon, resourcesProvider));
             addView(adminTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.TOP, LocaleController.isRTL ? 23 : 0, 10, LocaleController.isRTL ? 0 : 23, 0));
+        }
+
+        if (needMutualIcon) {
+            mutualView = new ImageView(context);
+            mutualView.setImageResource(R.drawable.ic_round_swap_horiz_24);
+            mutualView.setBackground(Theme.createSelectorDrawable(Theme.getColor(Theme.key_player_actionBarSelector)));
+            mutualView.setScaleType(ImageView.ScaleType.CENTER);
+            mutualView.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_windowBackgroundWhiteGrayIcon), PorterDuff.Mode.MULTIPLY));
+            mutualView.setVisibility(GONE);
+            addView(mutualView, LayoutHelper.createFrame(40, 40, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.CENTER_VERTICAL, LocaleController.isRTL ? 8 : 0, 0, LocaleController.isRTL ? 0 : 8, 0));
         }
 
         setFocusable(true);
@@ -632,6 +645,10 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
         nameTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourcesProvider));
         if (adminTextView != null) {
             adminTextView.setTextColor(Theme.getColor(Theme.key_profile_creatorIcon, resourcesProvider));
+        }
+
+        if (mutualView != null) {
+            mutualView.setVisibility(currentUser != null && currentUser.mutual_contact ? VISIBLE : GONE);
         }
     }
 
