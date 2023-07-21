@@ -5681,7 +5681,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean isChatNoForwards(long chatId) {
-        return isChatNoForwards(getChat(chatId));
+        return false;
     }
 
     public TLRPC.User getUser(Long id) {
