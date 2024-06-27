@@ -315,6 +315,8 @@ public class SharedConfig {
     public static int callEncryptionHintDisplayedCount;
 
     public static boolean ghost;
+    public static boolean noTyping;
+    public static boolean noReading;
 
     public static TLRPC.TL_help_appUpdate pendingAppUpdate;
     public static int pendingAppUpdateBuildVersion;
@@ -655,6 +657,8 @@ public class SharedConfig {
             multipleReactionsPromoShowed = preferences.getBoolean("multipleReactionsPromoShowed", false);
             callEncryptionHintDisplayedCount = preferences.getInt("callEncryptionHintDisplayedCount", 0);
             ghost = preferences.getBoolean("ghost", false);
+            noTyping = preferences.getBoolean("noTyping", false);
+            noReading = preferences.getBoolean("noReading", false);
 
             loadDebugConfig(preferences);
 
@@ -1802,6 +1806,22 @@ public class SharedConfig {
         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("ghost", ghost);
+        editor.apply();
+    }
+
+    public static void toggleNoTyping() {
+        noTyping = !noTyping;
+        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("noTyping", noTyping);
+        editor.apply();
+    }
+
+    public static void toggleNoReading() {
+        noReading = !noReading;
+        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("noReading", noReading);
         editor.apply();
     }
 

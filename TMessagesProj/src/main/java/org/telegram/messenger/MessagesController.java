@@ -9783,6 +9783,8 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public boolean sendTyping(long dialogId, long threadMsgId, int action, String emojicon, int classGuid) {
+        if (SharedConfig.noTyping)
+            return true;
         if (action < 0 || action >= sendingTypings.length || dialogId == 0) {
             return false;
         }
@@ -12832,6 +12834,8 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     private void completeReadTask(ReadTask task) {
+        if (SharedConfig.noReading)
+            return;
         if (task.replyId != 0) {
             TLRPC.TL_messages_readDiscussion req = new TLRPC.TL_messages_readDiscussion();
             req.msg_id = (int) task.replyId;
@@ -12878,6 +12882,8 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     private void checkReadTasks() {
+        if (SharedConfig.noReading)
+            return;
         long time = SystemClock.elapsedRealtime();
         for (int a = 0, size = readTasks.size(); a < size; a++) {
             ReadTask task = readTasks.get(a);
@@ -12904,6 +12910,8 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void markDialogAsReadNow(long dialogId, long replyId) {
+        if (SharedConfig.noReading)
+            return;
         Utilities.stageQueue.postRunnable(() -> {
             if (replyId != 0) {
                 String key = dialogId + "_" + replyId;
@@ -12927,6 +12935,13 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void markMentionsAsRead(long dialogId, long topicId) {
+        if (!SharedConfig.noReading)
+            markMentionsAsRead(dialogId, topicId, true);
+    }
+
+    public void markMentionsAsRead(long dialogId, long topicId, boolean shouldRead) {
+        if (!shouldRead)
+            return;
         if (DialogObject.isEncryptedDialog(dialogId) || dialogId == getUserConfig().getClientUserId()) {
             return;
         }
@@ -12943,6 +12958,13 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void markDialogAsRead(long dialogId, int maxPositiveId, int maxNegativeId, int maxDate, boolean popup, long threadId, int countDiff, boolean readNow, int scheduledCount) {
+        if (!SharedConfig.noReading)
+            markDialogAsRead(dialogId, maxPositiveId, maxNegativeId, maxDate, popup, threadId, countDiff, readNow, scheduledCount, true);
+    }
+
+        public void markDialogAsRead(long dialogId, int maxPositiveId, int maxNegativeId, int maxDate, boolean popup, long threadId, int countDiff, boolean readNow, int scheduledCount, boolean shouldRead) {
+        if (!shouldRead)
+            return;
         boolean createReadTask;
 
         if (threadId != 0) {

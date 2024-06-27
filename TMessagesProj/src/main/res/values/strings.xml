@@ -8964,4 +8964,8 @@
     <string name="InAppCameraInfo">In attachments</string>
     <string name="GhostMode">Ghost Mode</string>
     <string name="GhostModeInfo"><![CDATA[You will be offline until you send a message. Use ONLY in pair with no-reading & no-typing mode]]></string>
+    <string name="NoTyping">Don\'t send typing</string>
+    <string name="NoTypingInfo">No-one will know that you\'re writing a message</string>
+    <string name="NoReading">Don\'t send read status</string>
+    <string name="NoReadingInfo">No one will know that you\'re read a message</string>
 </resources>

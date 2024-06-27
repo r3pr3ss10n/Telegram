@@ -36,6 +36,8 @@ public class ForkSettingsActivity extends BaseFragment {
     private int sectionRow1;
 
     private int ghostRow;
+    private int noTypingRow;
+    private int noReadingRow;
 
     @Override
     public boolean onFragmentCreate() {
@@ -43,6 +45,7 @@ public class ForkSettingsActivity extends BaseFragment {
         rowCount = 0;
         sectionRow1 = rowCount++;
         ghostRow = rowCount++;
+        noTypingRow = rowCount++;
         return true;
     }
 
@@ -92,6 +95,14 @@ public class ForkSettingsActivity extends BaseFragment {
                 SharedConfig.toggleGhost();
                 ((TextCheckCell) view).setChecked(SharedConfig.ghost);
             }
+            if (position == noTypingRow && view instanceof TextCheckCell) {
+                SharedConfig.toggleNoTyping();
+                ((TextCheckCell) view).setChecked(SharedConfig.noTyping);
+            }
+            if (position == noReadingRow && view instanceof TextCheckCell) {
+                SharedConfig.toggleNoReading();
+                ((TextCheckCell) view).setChecked(SharedConfig.noReading);
+            }
         });
     }
 
@@ -117,7 +128,7 @@ public class ForkSettingsActivity extends BaseFragment {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == ghostRow) {
+            if (position == ghostRow || position == noTypingRow || position == noReadingRow) {
                 return 3; // TextCheckCell
             } else if (position == sectionRow1) {
                 return 4; // HeaderCell
@@ -174,6 +185,16 @@ public class ForkSettingsActivity extends BaseFragment {
                 String info = LocaleController.getString("GhostModeInfo", R.string.GhostModeInfo);
                 textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("ghost", false), true, false);
             }
+            if (position == noTypingRow) {
+                String title = LocaleController.getString("NoTyping", R.string.NoTyping);
+                String info = LocaleController.getString("NoTypingInfo", R.string.NoTypingInfo);
+                textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("noTyping", false), true, false);
+            }
+            if (position == noReadingRow) {
+                String title = LocaleController.getString("NoReading", R.string.NoReading);
+                String info = LocaleController.getString("NoReadingInfo", R.string.NoReadingInfo);
+                textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("noReading", false), true, false);
+            }
         }
 
         private void bindHeaderCell(RecyclerView.ViewHolder holder, int position) {
@@ -186,7 +207,7 @@ public class ForkSettingsActivity extends BaseFragment {
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
             int position = holder.getAdapterPosition();
-            return position == ghostRow;
+            return position == ghostRow || position == noReadingRow || position == noTypingRow;
         }
     }
 
