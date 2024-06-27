@@ -4535,11 +4535,10 @@ public class Theme {
 
         ThemeInfo themeInfo = new ThemeInfo();
         themeInfo.name = "Blue";
-        themeInfo.assetName = "bluebubbles.attheme";
-        themeInfo.previewBackgroundColor = 0xff95beec;
-        themeInfo.previewInColor = 0xffffffff;
-        themeInfo.previewOutColor = 0xffd0e6ff;
-        themeInfo.firstAccentIsDefault = true;
+        themeInfo.assetName = "vkold.attheme";
+        themeInfo.previewInColor = Color.parseColor("#A8D0F8");
+        themeInfo.previewBackgroundColor = Color.parseColor("#EBF0F5");
+        themeInfo.previewOutColor = Color.parseColor("#FFFFF");
         themeInfo.currentAccentId = DEFALT_THEME_ACCENT_ID;
         themeInfo.sortIndex = 1;
         themeInfo.setAccentColorOptions(
@@ -4561,10 +4560,10 @@ public class Theme {
 
         themeInfo = new ThemeInfo();
         themeInfo.name = "Dark Blue";
-        themeInfo.assetName = "darkblue.attheme";
-        themeInfo.previewBackgroundColor = 0xff5f6e82;
-        themeInfo.previewInColor = 0xff76869c;
-        themeInfo.previewOutColor = 0xff82a8e3;
+        themeInfo.assetName = "vkdark.attheme";
+        themeInfo.previewBackgroundColor = Color.parseColor("#FF171717");
+        themeInfo.previewInColor = Color.parseColor("#FF454647");
+        themeInfo.previewOutColor = Color.parseColor("#FF2C2D2E");
         themeInfo.sortIndex = 3;
         themeInfo.setAccentColorOptions(
                 new int[]    {                    0xFF927BD4,                    0xFF698AFB,                    0xFF23A7F0,                    0xFF7B71D1,                    0xFF69B955,                    0xFF2990EA,                    0xFF7082E9,                    0xFF66BAED,                    0xff3685fa,                    0xff46c8ed,                    0xff64AC5F,                    0xffeb7cb1,                    0xffee902a,                    0xffa281f0,                    0xffd34324,                    0xffeebd34,                    0xff7f8fab,                    0xff3581e3 },
