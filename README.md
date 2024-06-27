@@ -10,7 +10,9 @@ App may stop working anytime.
 1. Ghost (Offline) mode. No one will see that you're online
 2. No-reading mode. No one will know that you're read message
 3. No-typing mode. No one will know that you're writing something
-4. Some other small features that makes this app really better
+4. ability to do screenshots in secret chats
+5. ability to do screenshots & download content in channels where so is prohibted
+6. Some other small features that makes this app really better
 
 Ghost mode works only when no-reading and no-typing enabled as well. 
 
