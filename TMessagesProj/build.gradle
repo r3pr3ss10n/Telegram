@@ -2,6 +2,12 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 apply plugin: 'com.android.library'
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+
 repositories {
     mavenCentral()
     google()
@@ -127,6 +133,8 @@ android {
             buildConfigField "boolean", "DEBUG_VERSION", "true"
             buildConfigField "boolean", "DEBUG_PRIVATE_VERSION", "true"
             buildConfigField "boolean", "BUILD_HOST_IS_WINDOWS", isWindows
+            buildConfigField "String", "APP_HASH", "\"${localProperties.getProperty('APP_HASH')}\""
+            buildConfigField "int", "APP_ID", "${localProperties.getProperty('APP_ID')}"
         }
 
         HA_private {
