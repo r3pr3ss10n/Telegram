@@ -187,6 +187,9 @@ android {
 
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
 
+        buildConfigField "String", "APP_HASH", "\"${localProperties.getProperty('APP_HASH')}\""
+        buildConfigField "int", "APP_ID", "\"${localProperties.getProperty('APP_ID')}\""
+
         externalNativeBuild {
             cmake {
                 version '3.10.2'
