@@ -96,10 +96,6 @@ android {
         manifest.srcFile '../TMessagesProj/config/debug/AndroidManifest.xml'
     }
 
-    sourceSets.standalone {
-        manifest.srcFile '../TMessagesProj/config/release/AndroidManifest.xml'
-    }
-
     sourceSets.release {
         manifest.srcFile '../TMessagesProj/config/release/AndroidManifest.xml'
     }
@@ -139,9 +135,6 @@ android {
             }
             sourceSets.release {
                 manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_SDK23.xml'
-            }
-            sourceSets.standalone {
-                manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
             }
             ext {
                 abiVersionCode = 9
