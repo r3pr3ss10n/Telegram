@@ -4538,7 +4538,7 @@ public class Theme {
         themeInfo.assetName = "vkold.attheme";
         themeInfo.previewInColor = Color.parseColor("#A8D0F8");
         themeInfo.previewBackgroundColor = Color.parseColor("#EBF0F5");
-        themeInfo.previewOutColor = Color.parseColor("#FFFFF");
+        themeInfo.previewOutColor = Color.parseColor("#FFFFFF");
         themeInfo.currentAccentId = DEFALT_THEME_ACCENT_ID;
         themeInfo.sortIndex = 1;
         themeInfo.setAccentColorOptions(
