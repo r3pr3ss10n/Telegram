@@ -11969,32 +11969,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         showDialog(builder.create());
     }
 
-    private void showVoiceHint(boolean hide, boolean video) {
-        if (getParentActivity() == null || fragmentView == null || hide && voiceHintTextView == null || chatMode != 0 || chatActivityEnterView == null  || chatActivityEnterView.getAudioVideoButtonContainer() == null || chatActivityEnterView.getAudioVideoButtonContainer().getVisibility() != View.VISIBLE || isInPreviewMode()) {
-            return;
-        }
-        if (voiceHintTextView == null) {
-            SizeNotifierFrameLayout frameLayout = (SizeNotifierFrameLayout) fragmentView;
-            int index = frameLayout.indexOfChild(chatActivityEnterView);
-            if (index == -1) {
-                return;
-            }
-            voiceHintTextView = new HintView(getParentActivity(), 9, themeDelegate);
-            frameLayout.addView(voiceHintTextView, index + 1,  LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.TOP, 10, 0, 10, 0));
-        }
-        if (hide) {
-            voiceHintTextView.hide();
-            return;
-        }
-
-        if (chatActivityEnterView.hasRecordVideo()) {
-            voiceHintTextView.setText(video ? LocaleController.getString("HoldToVideo", R.string.HoldToVideo) : LocaleController.getString("HoldToAudio", R.string.HoldToAudio));
-        } else {
-            voiceHintTextView.setText(LocaleController.getString("HoldToAudioOnly", R.string.HoldToAudioOnly));
-        }
-
-        voiceHintTextView.showForView(chatActivityEnterView.getAudioVideoButtonContainer(), true);
-    }
+    private void showVoiceHint(boolean hide, boolean video) {}
 
     public boolean checkSlowMode(View view) {
         CharSequence time = chatActivityEnterView.getSlowModeTimer();
