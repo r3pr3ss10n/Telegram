@@ -619,8 +619,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private final ArrayList<Integer> visibleSortedUsers = new ArrayList<>();
     private int usersForceShowingIn = 0;
 
-    private int forkHeaderRow;
-    private int forkSectionCell;
     private int forkRow;
 
     private boolean firstLayout = true;
@@ -8541,8 +8539,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         sharedMediaRow = -1;
         notificationsSimpleRow = -1;
         settingsRow = -1;
-
-        forkHeaderRow = forkRow = forkCheckUpdateRow = forkSectionCell = -1;
+        forkRow = -1;
 
         unblockRow = -1;
         joinRow = -1;
@@ -8606,6 +8603,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
 
                 settingsSectionRow2 = rowCount++;
+                forkRow = rowCount++;
                 chatRow = rowCount++;
                 privacyRow = rowCount++;
                 notificationRow = rowCount++;
@@ -8618,9 +8616,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 devicesRow = rowCount++;
                 languageRow = rowCount++;
                 devicesSectionRow = rowCount++;
-                forkHeaderRow = rowCount++;
-                forkRow = rowCount++;
-                forkSectionCell = rowCount++;
                 if (!getMessagesController().premiumFeaturesBlocked()) {
                     premiumRow = rowCount++;
                 }
@@ -10836,9 +10831,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             switch (holder.getItemViewType()) {
                 case VIEW_TYPE_HEADER:
                     HeaderCell headerCell = (HeaderCell) holder.itemView;
-                    if (position == forkHeaderRow) {
-                        headerCell.setText(LocaleController.getString("AppName", R.string.AppName));
-                    }
                     if (position == infoHeaderRow) {
                         if (ChatObject.isChannel(currentChat) && !currentChat.megagroup && channelInfoRow != -1) {
                             headerCell.setText(LocaleController.getString("ReportChatDescription", R.string.ReportChatDescription));
@@ -11149,7 +11141,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     } else if (position == chatRow) {
                         textCell.setTextAndIcon(LocaleController.getString("ChatSettings", R.string.ChatSettings), R.drawable.msg2_discussion, true);
                     } else if (position == forkRow) {
-                        textCell.setTextAndIcon(LocaleController.getString("ForkSettingsTitle", R.string.ForkSettingsTitle), R.drawable.menu_fork, true);
+                        textCell.setTextAndIcon(LocaleController.getString("ForkSettingsTitle", R.string.ForkSettingsTitle), R.drawable.msg_settings_old, true);
                     } else if (position == filtersRow) {
                         textCell.setTextAndIcon(LocaleController.getString(R.string.Filters), R.drawable.msg2_folder, true);
                     } else if (position == stickersRow) {
@@ -11502,13 +11494,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
 
         @Override
         public int getItemViewType(int position) {
-            if (position == forkSectionCell) {
-                return 7;
-            } else if (position == forkHeaderRow) {
-                return 1;
-            } else if (position == forkRow) {
-                return 4;
-            }
             if (position == infoHeaderRow || position == membersHeaderRow || position == settingsSectionRow2 ||
                     position == numberSectionRow || position == helpHeaderRow || position == debugHeaderRow) {
                 return VIEW_TYPE_HEADER;
@@ -11526,7 +11511,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                     position == questionRow || position == devicesRow || position == filtersRow || position == stickersRow ||
                     position == faqRow || position == policyRow || position == sendLogsRow || position == sendLastLogsRow ||
                     position == clearLogsRow || position == switchBackendRow || position == setAvatarRow || position == addToGroupButtonRow ||
-                    position == addToContactsRow || position == liteModeRow || position == premiumGiftingRow || position == businessRow) {
+                    position == addToContactsRow || position == liteModeRow || position == premiumGiftingRow || position == businessRow || position == forkRow) {
                 return VIEW_TYPE_TEXT;
             } else if (position == notificationsDividerRow) {
                 return VIEW_TYPE_DIVIDER;

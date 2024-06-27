@@ -8960,4 +8960,6 @@
     <string name="ChromeCrashTitle">Aw, Snap!</string>
     <string name="ChromeCrashMessage">Something went wrong while displaying this webpage.\n\nIf it occurs frequently, consider updating **Android WebView**.</string>
     <string name="ForkSettingsTitle">Advanced settings</string>
+    <string name="InAppCamera">Enable In-App Camera</string>
+    <string name="InAppCameraInfo">In attachments</string>
 </resources>
