@@ -8962,4 +8962,6 @@
     <string name="ForkSettingsTitle">Advanced settings</string>
     <string name="InAppCamera">Enable In-App Camera</string>
     <string name="InAppCameraInfo">In attachments</string>
+    <string name="GhostMode">Ghost Mode</string>
+    <string name="GhostModeInfo"><![CDATA[You will be offline until you send a message. Use ONLY in pair with no-reading & no-typing mode]]></string>
 </resources>

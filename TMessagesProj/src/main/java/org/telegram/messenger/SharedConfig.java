@@ -314,6 +314,8 @@ public class SharedConfig {
     public static int dayNightThemeSwitchHintCount;
     public static int callEncryptionHintDisplayedCount;
 
+    public static boolean ghost;
+
     public static TLRPC.TL_help_appUpdate pendingAppUpdate;
     public static int pendingAppUpdateBuildVersion;
     public static long lastUpdateCheckTime;
@@ -652,6 +654,7 @@ public class SharedConfig {
             photoViewerBlur = preferences.getBoolean("photoViewerBlur", true);
             multipleReactionsPromoShowed = preferences.getBoolean("multipleReactionsPromoShowed", false);
             callEncryptionHintDisplayedCount = preferences.getInt("callEncryptionHintDisplayedCount", 0);
+            ghost = preferences.getBoolean("ghost", false);
 
             loadDebugConfig(preferences);
 
@@ -1792,6 +1795,14 @@ public class SharedConfig {
             }
         }
         return legacyDevicePerformanceClass;
+    }
+
+    public static void toggleGhost() {
+        ghost = !ghost;
+        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("ghost", ghost);
+        editor.apply();
     }
 
 

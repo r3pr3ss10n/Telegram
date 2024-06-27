@@ -34,14 +34,15 @@ public class ForkSettingsActivity extends BaseFragment {
 
     private int rowCount;
     private int sectionRow1;
-    private int inappCameraRow;
+
+    private int ghostRow;
 
     @Override
     public boolean onFragmentCreate() {
         super.onFragmentCreate();
         rowCount = 0;
         sectionRow1 = rowCount++;
-        inappCameraRow = rowCount++;
+        ghostRow = rowCount++;
         return true;
     }
 
@@ -87,9 +88,9 @@ public class ForkSettingsActivity extends BaseFragment {
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT));
 
         listView.setOnItemClickListener((view, position, x, y) -> {
-            if (position == inappCameraRow && view instanceof TextCheckCell) {
-                SharedConfig.toggleInappCamera();
-                ((TextCheckCell) view).setChecked(SharedConfig.inappCamera);
+            if (position == ghostRow && view instanceof TextCheckCell) {
+                SharedConfig.toggleGhost();
+                ((TextCheckCell) view).setChecked(SharedConfig.ghost);
             }
         });
     }
@@ -116,7 +117,7 @@ public class ForkSettingsActivity extends BaseFragment {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == inappCameraRow) {
+            if (position == ghostRow) {
                 return 3; // TextCheckCell
             } else if (position == sectionRow1) {
                 return 4; // HeaderCell
@@ -168,10 +169,10 @@ public class ForkSettingsActivity extends BaseFragment {
         private void bindTextCheckCell(RecyclerView.ViewHolder holder, int position) {
             TextCheckCell textCell = (TextCheckCell) holder.itemView;
             SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-            if (position == inappCameraRow) {
-                String title = LocaleController.getString("InAppCamera", R.string.InAppCamera);
-                String info = LocaleController.getString("InAppCameraInfo", R.string.InAppCameraInfo);
-                textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("inappCamera", true), false, false);
+            if (position == ghostRow) {
+                String title = LocaleController.getString("GhostMode", R.string.GhostMode);
+                String info = LocaleController.getString("GhostModeInfo", R.string.GhostModeInfo);
+                textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("ghost", false), true, false);
             }
         }
 
@@ -185,7 +186,7 @@ public class ForkSettingsActivity extends BaseFragment {
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
             int position = holder.getAdapterPosition();
-            return position == inappCameraRow;
+            return position == ghostRow;
         }
     }
 
