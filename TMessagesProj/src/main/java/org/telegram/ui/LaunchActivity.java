@@ -7543,21 +7543,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                         showVoiceChatTooltip(mute ? UndoView.ACTION_VOIP_SOUND_MUTED : UndoView.ACTION_VOIP_SOUND_UNMUTED);
                     }
                 }
-            } else if (!mainFragmentsStack.isEmpty() && (!PhotoViewer.hasInstance() || !PhotoViewer.getInstance().isVisible()) && event.getRepeatCount() == 0) {
-                BaseFragment fragment = mainFragmentsStack.get(mainFragmentsStack.size() - 1);
-                if (fragment instanceof ChatActivity) {
-                    if (((ChatActivity) fragment).maybePlayVisibleVideo()) {
-                        return true;
-                    }
-                }
-                if (AndroidUtilities.isTablet() && !rightFragmentsStack.isEmpty()) {
-                    fragment = rightFragmentsStack.get(rightFragmentsStack.size() - 1);
-                    if (fragment instanceof ChatActivity) {
-                        if (((ChatActivity) fragment).maybePlayVisibleVideo()) {
-                            return true;
-                        }
-                    }
-                }
             }
         }
         try {
