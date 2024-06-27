@@ -113,18 +113,26 @@ public class UserCell extends FrameLayout implements NotificationCenter.Notifica
     protected long dialogId;
 
     public UserCell(Context context, int padding, int checkbox, boolean admin) {
-        this(context, padding, checkbox, admin, false, false);
+        this(context, padding, checkbox, admin, false, null);
     }
 
     public UserCell(Context context, int padding, int checkbox, boolean admin, Theme.ResourcesProvider resourcesProvider) {
-        this(context, padding, checkbox, admin,  false,false);
+        this(context, padding, checkbox, admin, false, resourcesProvider);
     }
 
     public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton) {
-        this(context, padding, checkbox, admin, needAddButton, false);
+        this(context, padding, checkbox, admin, needAddButton, null);
     }
 
     public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton, boolean needMutualIcon) {
+        this(context, padding, checkbox, admin, needAddButton, needMutualIcon, null);
+    }
+
+    public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton, Theme.ResourcesProvider resourcesProvider) {
+        this(context, padding, checkbox, admin, needAddButton, false, resourcesProvider);
+    }
+
+    public UserCell(Context context, int padding, int checkbox, boolean admin, boolean needAddButton, boolean needMutualIcon, Theme.ResourcesProvider resourcesProvider) {
         super(context);
         this.resourcesProvider = resourcesProvider;
 
