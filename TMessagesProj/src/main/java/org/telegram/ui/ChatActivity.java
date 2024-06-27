@@ -148,7 +148,6 @@ import org.telegram.messenger.EmojiData;
 import org.telegram.messenger.FactCheckController;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.HashtagSearchController;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
@@ -542,7 +541,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private boolean showPinBulletin;
     private int pinBullerinTag;
     protected boolean openKeyboardOnAttachMenuClose;
-    private FlagSecureReason flagSecure;
     private boolean isFullyVisible;
 
     private MessageObject hintMessageObject;
@@ -3006,9 +3004,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             MediaController.getInstance().stopMediaObserver();
         }
 
-        if (flagSecure != null) {
-            flagSecure.detach();
-        }
         if (currentUser != null) {
             getMessagesController().cancelLoadFullUser(currentUser.id);
         }
@@ -8029,8 +8024,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         };
         chatScrollHelper.setScrollListener(this::invalidateMessagesVisiblePart);
         chatScrollHelper.setAnimationCallback(chatScrollHelperCallback);
-
-        flagSecure = new FlagSecureReason(getParentActivity().getWindow(), () -> currentEncryptedChat != null || getMessagesController().isChatNoForwards(currentChat));
 
         if (oldMessage != null) {
             chatActivityEnterView.setFieldText(oldMessage);
@@ -19787,9 +19780,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 if (chatActivityEnterView != null) {
                     chatActivityEnterView.setDialogId(dialog_id, currentAccount);
                 }
-                if (flagSecure != null) {
-                    flagSecure.invalidate();
-                }
             }
             if (avatarContainer != null && updateSubtitle) {
                 avatarContainer.updateSubtitle(true);
@@ -24224,7 +24214,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             progressDialogCurrent = null;
         }
 
-        flagSecure.detach();
 
         super.onBecomeFullyHidden();
     }
@@ -26789,7 +26778,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             chatListView.invalidate();
         }
 
-        flagSecure.attach();
     }
 
     public float getPullingDownOffset() {

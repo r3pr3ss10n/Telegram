@@ -103,7 +103,6 @@ import org.telegram.messenger.DownloadController;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.ImageReceiver;
@@ -1474,8 +1473,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
     private boolean wouldBeInPip;
     private AnimatedFloat roundVideoPlayPipFloat = new AnimatedFloat(this, 200, CubicBezierInterpolator.EASE_OUT);
     private Paint roundVideoPipPaint;
-
-    private FlagSecureReason flagSecure;
 
     public boolean makeVisibleAfterChange;
 
@@ -5146,9 +5143,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         reactionsLayoutInBubble.onDetachFromWindow();
         statusDrawableAnimationInProgress = false;
 
-        if (flagSecure != null) {
-            flagSecure.detach();
-        }
         if (topicButton != null) {
             topicButton.onDetached(this);
         }
@@ -5227,10 +5221,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
             toSeekBarProgress = showSeekbar ? 1f : 0f;
         }
         reactionsLayoutInBubble.onAttachToWindow();
-        if (flagSecure != null) {
-            flagSecure.attach();
-        }
-        updateFlagSecure();
 
         if (currentMessageObject != null && currentMessageObject.type == MessageObject.TYPE_EXTENDED_MEDIA_PREVIEW && unlockLayout != null) {
             invalidate();
@@ -9569,7 +9559,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
 
         highlightCaptionToSetStart = highlightCaptionToSetEnd = -1;
 
-        updateFlagSecure();
     }
 
     private boolean loopStickers() {
@@ -9580,22 +9569,6 @@ public class ChatMessageCell extends BaseCell implements SeekBar.SeekBarDelegate
         if (currentMessageObject.type == MessageObject.TYPE_EXTENDED_MEDIA_PREVIEW && unlockLayout != null) {
             unlockX = backgroundDrawableLeft + (photoImage.getImageWidth() - unlockLayout.getWidth()) / 2f;
             unlockY = backgroundDrawableTop + photoImage.getImageY() + (photoImage.getImageHeight() - unlockLayout.getHeight()) / 2f;
-        }
-    }
-
-    private void updateFlagSecure() {
-        if (flagSecure == null) {
-            Activity activity = AndroidUtilities.findActivity(getContext());
-            Window window = activity == null ? null : activity.getWindow();
-            if (window != null) {
-                flagSecure = new FlagSecureReason(window, () -> currentMessageObject != null && currentMessageObject.messageOwner != null && (currentMessageObject.messageOwner.noforwards || currentMessageObject.isVoiceOnce() || currentMessageObject.hasRevealedExtendedMedia()));
-                if (attachedToWindow) {
-                    flagSecure.attach();
-                }
-            }
-        }
-        if (flagSecure != null) {
-            flagSecure.invalidate();
         }
     }
 
