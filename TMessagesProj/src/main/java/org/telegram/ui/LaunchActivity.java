@@ -99,7 +99,6 @@ import org.telegram.messenger.DialogObject;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.FingerprintController;
-import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.GenericProvider;
 import org.telegram.messenger.LiteMode;
 import org.telegram.messenger.LocaleController;
@@ -325,8 +324,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         }
     };
 
-    private FlagSecureReason flagSecureReason;
-
     public static LaunchActivity instance;
     private View customNavigationBar;
 
@@ -375,8 +372,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             }
         }
         getWindow().setBackgroundDrawableResource(R.drawable.transparent);
-        flagSecureReason = new FlagSecureReason(getWindow(), () -> SharedConfig.passcodeHash.length() > 0 && !SharedConfig.allowScreenCapture);
-        flagSecureReason.attach();
 
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= 24) {
@@ -6118,9 +6113,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         super.onDestroy();
         onFinish();
         FloatingDebugController.onDestroy();
-        if (flagSecureReason != null) {
-            flagSecureReason.detach();
-        }
     }
 
     @Override
@@ -6452,8 +6444,6 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
             if (backgroundTablet != null) {
                 backgroundTablet.setBackgroundImage(Theme.getCachedWallpaper(), Theme.isWallpaperMotion());
             }
-        } else if (id == NotificationCenter.didSetPasscode) {
-            flagSecureReason.invalidate();
         } else if (id == NotificationCenter.reloadInterface) {
             boolean last = mainFragmentsStack.size() > 1 && mainFragmentsStack.get(mainFragmentsStack.size() - 1) instanceof ProfileActivity;
             if (last) {

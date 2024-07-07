@@ -130,7 +130,6 @@ import org.telegram.messenger.DocumentObject;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.FlagSecureReason;
 import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.ImageLocation;
 import org.telegram.messenger.ImageReceiver;
@@ -433,8 +432,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     private float searchTransitionProgress;
     private Animator searchViewTransition;
     private boolean searchMode;
-
-    private FlagSecureReason flagSecure;
 
     private HashMap<Integer, Integer> positionToOffset = new HashMap<>();
 
@@ -1782,9 +1779,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (dialogId != 0) {
                 currentEncryptedChat = getMessagesController().getEncryptedChat(DialogObject.getEncryptedChatId(dialogId));
             }
-            if (flagSecure != null) {
-                flagSecure.invalidate();
-            }
             TLRPC.User user = getMessagesController().getUser(userId);
             if (user == null) {
                 return false;
@@ -1837,9 +1831,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 } else {
                     return false;
                 }
-            }
-            if (flagSecure != null) {
-                flagSecure.invalidate();
             }
 
             if (currentChat.megagroup) {
@@ -2085,13 +2076,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
     public void setParentLayout(INavigationLayout layout) {
         super.setParentLayout(layout);
 
-        if (flagSecure != null) {
-            flagSecure.detach();
-            flagSecure = null;
-        }
-        if (layout != null && layout.getParentActivity() != null) {
-            flagSecure = new FlagSecureReason(layout.getParentActivity().getWindow(), () -> currentEncryptedChat != null || getMessagesController().isChatNoForwards(currentChat));
-        }
     }
 
     @Override
@@ -7485,9 +7469,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
             if (currentEncryptedChat != null && chat.id == currentEncryptedChat.id) {
                 currentEncryptedChat = chat;
                 updateListAnimated(false);
-                if (flagSecure != null) {
-                    flagSecure.invalidate();
-                }
             }
         } else if (id == NotificationCenter.blockedUsersDidLoad) {
             boolean oldValue = userBlocked;
@@ -7543,9 +7524,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 if (newChat != null) {
                     currentChat = newChat;
                     createActionBarMenu(true);
-                }
-                if (flagSecure != null) {
-                    flagSecure.invalidate();
                 }
                 if (currentChat.megagroup && (loadChannelParticipants || !byChannelUsers)) {
                     getChannelParticipants(true);
@@ -7798,9 +7776,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
             }
         }
-        if (flagSecure != null) {
-            flagSecure.attach();
-        }
         updateItemsUsername();
     }
 
@@ -7812,9 +7787,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
         }
         if (imageUpdater != null) {
             imageUpdater.onPause();
-        }
-        if (flagSecure != null) {
-            flagSecure.detach();
         }
         if (sharedMediaLayout != null) {
             sharedMediaLayout.onPause();
@@ -9277,9 +9249,6 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 currentChat = chat;
             } else {
                 chat = currentChat;
-            }
-            if (flagSecure != null) {
-                flagSecure.invalidate();
             }
 
             final int colorId = ChatObject.getProfileColorId(chat);
