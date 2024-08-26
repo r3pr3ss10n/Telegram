@@ -1,30 +1,46 @@
-## re(pression's)Telegram messenger for Android
+# re(pression's) Telegram Messenger for Android
 
-Slighly customized official Telegram app.
+A slightly customized version of the official Telegram app.
 
-**WARNING: This app prohibits telegram's terms of service.**
-
-App may stop working anytime. 
+**⚠️ WARNING: This app violates Telegram's terms of service. It may stop working at any time.**
 
 ## Features
-1. Ghost (Offline) mode. No one will see that you're online
-2. No-reading mode. No one will know that you're read message
-3. No-typing mode. No one will know that you're writing something
-4. ability to do screenshots in secret chats
-5. ability to do screenshots & download content in channels where so is prohibted
-6. Some other small features that makes this app really better
 
-Ghost mode works only when no-reading and no-typing enabled as well. 
+1. **Ghost (Offline) Mode**  
+   Stay hidden—no one will see when you're online.
 
-## Building from source
+2. **No-Reading Mode**  
+   Read messages without notifying the sender.
 
-1. [**Obtain your own api_id**](https://core.telegram.org/api/obtaining_api_id) for your application.
-2. Setup local.properties like:
-```
-   RELEASE_KEY_PASSWORD=<pass>
-   RELEASE_KEY_ALIAS=<alias>
-   RELEASE_STORE_PASSWORD=<pass>
-   APP_ID=<your app id>
-   APP_HASH=<your hash>
- ```
-3. Build using Android Studio
+3. **No-Typing Mode**  
+   Type your messages without showing the "typing..." indicator.
+
+4. **Secret Screenshot**  
+   Take screenshots in secret chats without detection.
+
+5. **Bypass Screenshot Restrictions**  
+   Capture screenshots and download content from channels where these actions are restricted.
+
+6. **Additional Enhancements**  
+   Enjoy a few other small features that make this app even better.
+
+**Note:** Ghost mode is only functional when both No-Reading and No-Typing modes are enabled.
+
+## Building from Source
+
+1. [Obtain your own API ID and Hash](https://core.telegram.org/api/obtaining_api_id) from Telegram.
+
+2. Configure your `local.properties` file as follows:
+    ```plaintext
+    RELEASE_KEY_PASSWORD=<your_password>
+    RELEASE_KEY_ALIAS=<your_alias>
+    RELEASE_STORE_PASSWORD=<your_password>
+    APP_ID=<your_app_id>
+    APP_HASH=<your_app_hash>
+    ```
+
+3. Build the app using Android Studio.
+
+---
+
+This version clarifies and organizes the information while maintaining the important details.
