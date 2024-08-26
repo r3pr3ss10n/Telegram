@@ -548,7 +548,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private boolean showPinBulletin;
     private int pinBullerinTag;
     protected boolean openKeyboardOnAttachMenuClose;
-    private boolean isFullyVisible;
+    public boolean isFullyVisible;
 
     private MessageObject hintMessageObject;
     private int hintMessageType;

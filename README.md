@@ -40,7 +40,3 @@ A slightly customized version of the official Telegram app.
     ```
 
 3. Build the app using Android Studio.
-
----
-
-This version clarifies and organizes the information while maintaining the important details.
