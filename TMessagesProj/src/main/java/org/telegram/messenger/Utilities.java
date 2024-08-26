@@ -14,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.net.Uri;
 
 import com.carrotsearch.randomizedtesting.Xoroshiro128PlusRandom;
 
@@ -473,6 +474,10 @@ public class Utilities {
         return Math.max(Math.min(value, maxValue), minValue);
     }
 
+    public static float clamp01(float value) {
+        return clamp(value, 1f, 0f);
+    }
+
     public static double clamp(double value, double maxValue, double minValue) {
         if (Double.isNaN(value)) {
             return minValue;
@@ -606,6 +611,14 @@ public class Utilities {
 
     public static boolean isNullOrEmpty(final Collection<?> list) {
         return list == null || list.isEmpty();
+    }
+
+    public static Uri uriParseSafe(String link) {
+        try {
+            return Uri.parse(link);
+        } catch (Exception ignore) {
+            return null;
+        }
     }
 
 }

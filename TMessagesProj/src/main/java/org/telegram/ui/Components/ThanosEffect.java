@@ -14,15 +14,11 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.view.Choreographer;
-import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.zxing.common.detector.MathUtils;
 
@@ -36,7 +32,6 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.Utilities;
-import org.telegram.ui.ActionBar.Theme;
 import org.telegram.ui.Cells.BaseCell;
 import org.telegram.ui.Cells.ChatActionCell;
 import org.telegram.ui.Cells.ChatMessageCell;
@@ -193,6 +188,11 @@ public class ThanosEffect extends TextureView {
         toSet.clear();
         if (drawThread != null) {
             drawThread.kill();
+        }
+        if (whenDone != null) {
+            Runnable runnable = whenDone;
+            whenDone = null;
+            runnable.run();
         }
     }
 
@@ -383,8 +383,10 @@ public class ThanosEffect extends TextureView {
 
         public void kill() {
             if (!alive) {
+                FileLog.d("ThanosEffect: kill failed, already dead");
                 return;
             }
+            FileLog.d("ThanosEffect: kill");
             try {
                 Handler handler = getHandler();
                 if (handler != null) {
@@ -395,8 +397,10 @@ public class ThanosEffect extends TextureView {
 
         private void killInternal() {
             if (!alive) {
+                FileLog.d("ThanosEffect: killInternal failed, already dead");
                 return;
             }
+            FileLog.d("ThanosEffect: killInternal");
             alive = false;
             for (int i = 0; i < pendingAnimations.size(); ++i) {
                 Animation animation = pendingAnimations.get(i);
@@ -449,11 +453,13 @@ public class ThanosEffect extends TextureView {
 
             eglDisplay = egl.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
             if (eglDisplay == egl.EGL_NO_DISPLAY) {
+                FileLog.e("ThanosEffect: eglDisplay == egl.EGL_NO_DISPLAY");
                 killInternal();
                 return;
             }
             int[] version = new int[2];
             if (!egl.eglInitialize(eglDisplay, version)) {
+                FileLog.e("ThanosEffect: failed eglInitialize");
                 killInternal();
                 return;
             }
@@ -469,6 +475,7 @@ public class ThanosEffect extends TextureView {
             EGLConfig[] eglConfigs = new EGLConfig[1];
             int[] numConfigs = new int[1];
             if (!egl.eglChooseConfig(eglDisplay, configAttributes, eglConfigs, 1, numConfigs)) {
+                FileLog.e("ThanosEffect: failed eglChooseConfig");
                 kill();
                 return;
             }
@@ -480,17 +487,20 @@ public class ThanosEffect extends TextureView {
             };
             eglContext = egl.eglCreateContext(eglDisplay, eglConfig, egl.EGL_NO_CONTEXT, contextAttributes);
             if (eglContext == null) {
+                FileLog.e("ThanosEffect: eglContext == null");
                 killInternal();
                 return;
             }
 
             eglSurface = egl.eglCreateWindowSurface(eglDisplay, eglConfig, surfaceTexture, null);
             if (eglSurface == null) {
+                FileLog.e("ThanosEffect: eglSurface == null");
                 killInternal();
                 return;
             }
 
             if (!egl.eglMakeCurrent(eglDisplay, eglSurface, eglSurface, eglContext)) {
+                FileLog.e("ThanosEffect: failed eglMakeCurrent");
                 killInternal();
                 return;
             }
@@ -498,6 +508,7 @@ public class ThanosEffect extends TextureView {
             int vertexShader = GLES31.glCreateShader(GLES31.GL_VERTEX_SHADER);
             int fragmentShader = GLES31.glCreateShader(GLES31.GL_FRAGMENT_SHADER);
             if (vertexShader == 0 || fragmentShader == 0) {
+                FileLog.e("ThanosEffect: vertexShader == 0 || fragmentShader == 0");
                 killInternal();
                 return;
             }
@@ -522,6 +533,7 @@ public class ThanosEffect extends TextureView {
             }
             drawProgram = GLES31.glCreateProgram();
             if (drawProgram == 0) {
+                FileLog.e("ThanosEffect: drawProgram == 0");
                 killInternal();
                 return;
             }
@@ -1073,7 +1085,7 @@ public class ThanosEffect extends TextureView {
                 } else if (type == 2) {
                     cell.drawCaptionLayout(canvas, cell.getCurrentPosition() != null && (cell.getCurrentPosition().flags & MessageObject.POSITION_FLAG_LEFT) == 0, alpha);
                 } else if (!(cell.getCurrentPosition() != null && (cell.getCurrentPosition().flags & MessageObject.POSITION_FLAG_LEFT) == 0)) {
-                    cell.drawReactionsLayout(canvas, alpha);
+                    cell.drawReactionsLayout(canvas, alpha, null);
                 }
                 cell.setInvalidatesParent(false);
                 canvas.restore();

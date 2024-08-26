@@ -2204,7 +2204,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 MessageObject.TextLayoutBlocks captionLayout = cell.getCaptionLayout();
                 for (int i = 0; i < captionLayout.textLayoutBlocks.size(); i++) {
                     MessageObject.TextLayoutBlock block = captionLayout.textLayoutBlocks.get(i);
-                    if (y >= block.textYOffset(captionLayout.textLayoutBlocks) && y <= block.textYOffset(captionLayout.textLayoutBlocks) + block.padTop + block.height) {
+                    if (y >= block.textYOffset(captionLayout.textLayoutBlocks) && y <= block.textYOffset(captionLayout.textLayoutBlocks) + block.padTop + block.height(cell.transitionParams)) {
                         layoutBlock.layout = block.textLayout;
                         layoutBlock.yOffset = block.textYOffset(captionLayout.textLayoutBlocks) + block.padTop;
                         int offsetX = 0;
@@ -2224,7 +2224,7 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
 
             for (int i = 0; i < messageObject.textLayoutBlocks.size(); i++) {
                 MessageObject.TextLayoutBlock block = messageObject.textLayoutBlocks.get(i);
-                if (y >= block.textYOffset(messageObject.textLayoutBlocks) && y <= block.textYOffset(messageObject.textLayoutBlocks) + block.padTop + block.height) {
+                if (y >= block.textYOffset(messageObject.textLayoutBlocks) && y <= block.textYOffset(messageObject.textLayoutBlocks) + block.padTop + block.height(cell.transitionParams)) {
                     layoutBlock.layout = block.textLayout;
                     layoutBlock.yOffset = block.textYOffset(messageObject.textLayoutBlocks) + block.padTop;
                     int offsetX = 0;
@@ -2498,6 +2498,10 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
                 clear(true);
             }
         }
+
+        public boolean isMenuEmpty() {
+            return !canCopy() && !canShowQuote();
+        }
     }
 
     public static class ArticleTextSelectionHelper extends TextSelectionHelper<ArticleSelectableView> {
@@ -2736,28 +2740,31 @@ public abstract class TextSelectionHelper<Cell extends TextSelectionHelper.Selec
             if (!arrayList.isEmpty()) {
                 TextLayoutBlock layoutBlock = arrayList.get(i);
 
-                int endOffset = endViewOffset;
-                int textLen = layoutBlock.getLayout().getText().length();
+                if (layoutBlock != null && layoutBlock.getLayout() != null && layoutBlock.getLayout().getText() != null) {
 
-                if (endOffset > textLen) {
-                    endOffset = textLen;
-                }
-                if (position == startViewPosition && position == endViewPosition) {
-                    if (startViewChildPosition == endViewChildPosition && startViewChildPosition == i) {
-                        drawSelection(canvas, layoutBlock.getLayout(), startViewOffset, endOffset, true, true, 0);
-                    } else if (i == startViewChildPosition) {
+                    int endOffset = endViewOffset;
+                    int textLen = layoutBlock.getLayout().getText().length();
+
+                    if (endOffset > textLen) {
+                        endOffset = textLen;
+                    }
+                    if (position == startViewPosition && position == endViewPosition) {
+                        if (startViewChildPosition == endViewChildPosition && startViewChildPosition == i) {
+                            drawSelection(canvas, layoutBlock.getLayout(), startViewOffset, endOffset, true, true, 0);
+                        } else if (i == startViewChildPosition) {
+                            drawSelection(canvas, layoutBlock.getLayout(), startViewOffset, textLen, true, false, 0);
+                        } else if (i == endViewChildPosition) {
+                            drawSelection(canvas, layoutBlock.getLayout(), 0, endOffset, false, true, 0);
+                        } else if (i > startViewChildPosition && i < endViewChildPosition) {
+                            drawSelection(canvas, layoutBlock.getLayout(), 0, textLen, false, false, 0);
+                        }
+                    } else if (position == startViewPosition && startViewChildPosition == i) {
                         drawSelection(canvas, layoutBlock.getLayout(), startViewOffset, textLen, true, false, 0);
-                    } else if (i == endViewChildPosition) {
+                    } else if (position == endViewPosition && endViewChildPosition == i) {
                         drawSelection(canvas, layoutBlock.getLayout(), 0, endOffset, false, true, 0);
-                    } else if (i > startViewChildPosition && i < endViewChildPosition) {
+                    } else if (position > startViewPosition && position < endViewPosition || (position == startViewPosition && i > startViewChildPosition) || (position == endViewPosition && i < endViewChildPosition)) {
                         drawSelection(canvas, layoutBlock.getLayout(), 0, textLen, false, false, 0);
                     }
-                } else if (position == startViewPosition && startViewChildPosition == i) {
-                    drawSelection(canvas, layoutBlock.getLayout(), startViewOffset, textLen, true, false, 0);
-                } else if (position == endViewPosition && endViewChildPosition == i) {
-                    drawSelection(canvas, layoutBlock.getLayout(), 0, endOffset, false, true, 0);
-                } else if (position > startViewPosition && position < endViewPosition || (position == startViewPosition && i > startViewChildPosition) || (position == endViewPosition && i < endViewChildPosition)) {
-                    drawSelection(canvas, layoutBlock.getLayout(), 0, textLen, false, false, 0);
                 }
             }
         }

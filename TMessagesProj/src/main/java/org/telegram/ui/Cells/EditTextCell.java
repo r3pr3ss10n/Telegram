@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -92,14 +93,15 @@ public class EditTextCell extends FrameLayout {
     }
 
     public EditTextCell(Context context, String hint, boolean multiline) {
-        this(context, hint, multiline, -1);
+        this(context, hint, multiline, -1, null);
     }
 
     public EditTextCell(
         Context context,
         String hint,
         boolean multiline,
-        int maxLength
+        int maxLength,
+        Theme.ResourcesProvider resourceProvider
     ) {
         super(context);
         this.maxLength = maxLength;
@@ -122,7 +124,7 @@ public class EditTextCell extends FrameLayout {
             @Override
             protected void dispatchDraw(Canvas canvas) {
                 super.dispatchDraw(canvas);
-                limit.setTextColor(limitColor.set(Theme.getColor(limitCount <= 0 ? Theme.key_text_RedRegular : Theme.key_dialogSearchHint, getResourcesProvider())));
+                limit.setTextColor(limitColor.set(Theme.getColor(limitCount <= 0 ? Theme.key_text_RedRegular : Theme.key_dialogSearchHint, resourceProvider)));
                 limit.setBounds(getScrollX(), 0, getScrollX() + getWidth() - getPaddingRight() + dp(42), getHeight());
                 limit.draw(canvas);
             }
@@ -137,8 +139,8 @@ public class EditTextCell extends FrameLayout {
         };
         limit.setCallback(editText);
         editText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
-        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText));
-        editText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        editText.setHintTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteHintText, resourceProvider));
+        editText.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourceProvider));
         editText.setBackground(null);
         if (multiline) {
             editText.setMaxLines(5);
@@ -152,7 +154,7 @@ public class EditTextCell extends FrameLayout {
         editText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT | (multiline ? InputType.TYPE_TEXT_FLAG_MULTI_LINE : 0) | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editText.setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES | InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editText.setHint(hint);
-        editText.setCursorColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText));
+        editText.setCursorColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlackText, resourceProvider));
         editText.setCursorSize(dp(19));
         editText.setCursorWidth(1.5f);
         editText.addTextChangedListener(new TextWatcher() {
@@ -197,6 +199,19 @@ public class EditTextCell extends FrameLayout {
         addView(editText, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT, Gravity.TOP));
 
         updateLimitText();
+    }
+
+    public ImageView setLeftDrawable(Drawable drawable) {
+        ImageView imageView = new ImageView(getContext());
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setImageDrawable(drawable);
+        addView(imageView, LayoutHelper.createFrame(24, 24, Gravity.LEFT | Gravity.CENTER_VERTICAL, 18, 0, 0, 0));
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) editText.getLayoutParams();
+        lp.leftMargin = dp(24);
+        editText.setLayoutParams(lp);
+
+        return imageView;
     }
 
     public void setText(CharSequence text) {

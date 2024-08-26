@@ -286,7 +286,7 @@ public class SessionCell extends FrameLayout {
         }
     }
 
-    public static Drawable createDrawable(int sz, String platform) {
+    public static CombinedDrawable createDrawable(int sz, String platform) {
         TLRPC.TL_authorization auth = new TLRPC.TL_authorization();
         auth.device_model = platform;
         auth.platform = platform;
@@ -294,7 +294,7 @@ public class SessionCell extends FrameLayout {
         return createDrawable(sz, auth);
     }
 
-    public static Drawable createDrawable(int sz, TLRPC.TL_authorization session) {
+    public static CombinedDrawable createDrawable(int sz, TLRPC.TL_authorization session) {
         String platform = session.platform.toLowerCase();
         if (platform.isEmpty()) {
             platform = session.system_version.toLowerCase();
@@ -350,6 +350,10 @@ public class SessionCell extends FrameLayout {
             iconId = R.drawable.filled_star_plus;
             colorKey = Theme.key_color_yellow;
             colorKey2 = Theme.key_color_orange;
+        } else if (platform.contains("ads")) {
+            iconId = R.drawable.msg_channel;
+            colorKey = Theme.key_avatar_backgroundPink;
+            colorKey2 = Theme.key_avatar_background2Pink;
         } else if (platform.equals("?")) {
             iconId = R.drawable.msg_emoji_question;
             colorKey = -1;

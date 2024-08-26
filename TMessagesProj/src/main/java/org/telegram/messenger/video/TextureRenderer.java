@@ -41,11 +41,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.exifinterface.media.ExifInterface;
-
-import com.google.zxing.common.detector.MathUtils;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
@@ -68,6 +64,7 @@ import org.telegram.ui.Components.CubicBezierInterpolator;
 import org.telegram.ui.Components.EditTextEffects;
 import org.telegram.ui.Components.FilterShaders;
 import org.telegram.ui.Components.Paint.Views.EditTextOutline;
+import org.telegram.ui.Components.Paint.Views.LinkPreview;
 import org.telegram.ui.Components.Paint.Views.LocationMarker;
 import org.telegram.ui.Components.Paint.Views.PaintTextOptionsView;
 import org.telegram.ui.Components.RLottieDrawable;
@@ -1210,6 +1207,8 @@ public class TextureRenderer {
                         initTextEntity(entity);
                     } else if (entity.type == VideoEditedInfo.MediaEntity.TYPE_LOCATION) {
                         initLocationEntity(entity);
+                    } else if (entity.type == VideoEditedInfo.MediaEntity.TYPE_LINK) {
+                        initLinkEntity(entity);
                     }
                 }
             } catch (Throwable e) {
@@ -1339,9 +1338,14 @@ public class TextureRenderer {
     }
 
     private void initLocationEntity(VideoEditedInfo.MediaEntity entity) {
-        LocationMarker marker = new LocationMarker(ApplicationLoader.applicationContext, entity.density);
+        final int variant = entity.type == VideoEditedInfo.MediaEntity.TYPE_LOCATION ? LocationMarker.VARIANT_LOCATION : LocationMarker.VARIANT_WEATHER;
+        LocationMarker marker = new LocationMarker(ApplicationLoader.applicationContext, variant, entity.density, 0);
+        marker.setIsVideo(true);
         marker.setText(entity.text);
         marker.setType(entity.subType, entity.color);
+        if (entity.weather != null && entity.entities.isEmpty()) {
+            marker.setCodeEmoji(UserConfig.selectedAccount, entity.weather.getEmoji());
+        }
         marker.setMaxWidth(entity.viewWidth);
         if (entity.entities.size() == 1) {
             marker.forceEmoji();
@@ -1389,6 +1393,25 @@ public class TextureRenderer {
 
             initStickerEntity(e.entity);
         }
+    }
+
+    private void initLinkEntity(VideoEditedInfo.MediaEntity entity) {
+        LinkPreview marker = new LinkPreview(ApplicationLoader.applicationContext, entity.density);
+        marker.setVideoTexture();
+        marker.set(UserConfig.selectedAccount, entity.linkSettings);
+        marker.setType(entity.subType, entity.color);
+        marker.setMaxWidth(entity.viewWidth + marker.padx + marker.padx);
+        marker.measure(View.MeasureSpec.makeMeasureSpec(entity.viewWidth, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(entity.viewHeight, View.MeasureSpec.EXACTLY));
+        marker.layout(0, 0, entity.viewWidth, entity.viewHeight);
+        float scale = entity.width * transformedWidth / entity.viewWidth;
+        int w = (int) (entity.viewWidth * scale), h = (int) (entity.viewHeight * scale), pad = 8;
+        entity.bitmap = Bitmap.createBitmap(w + pad + pad, h + pad + pad, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(entity.bitmap);
+        canvas.translate(pad, pad);
+        canvas.scale(scale, scale);
+        marker.draw(canvas);
+        entity.additionalWidth = (2 * pad) * scale / transformedWidth;
+        entity.additionalHeight = (2 * pad) * scale / transformedHeight;
     }
 
     private void initStickerEntity(VideoEditedInfo.MediaEntity entity) {

@@ -2,6 +2,7 @@ package org.telegram.ui.Components;
 
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.LongSparseArray;
 import android.util.SparseIntArray;
@@ -56,14 +57,29 @@ public class UItem extends AdapterWithDiffUtils.Item {
     public View.OnClickListener clickCallback;
 
     public Object object;
+    public Object object2;
 
     public boolean withUsername = true;
-
 
     public UItem(int viewType, boolean selectable) {
         super(viewType, selectable);
     }
 
+    public UItem(int viewType) {
+        super(viewType, false);
+    }
+
+    public UItem(int viewType, Object object) {
+        super(viewType, false);
+        this.object = object;
+    }
+
+    public static UItem asCustom(int id, View view) {
+        UItem i = new UItem(UniversalAdapter.VIEW_TYPE_CUSTOM, false);
+        i.id = id;
+        i.view = view;
+        return i;
+    }
     public static UItem asCustom(View view) {
         UItem i = new UItem(UniversalAdapter.VIEW_TYPE_CUSTOM, false);
         i.view = view;
@@ -134,6 +150,14 @@ public class UItem extends AdapterWithDiffUtils.Item {
         UItem i = new UItem(UniversalAdapter.VIEW_TYPE_TEXT, false);
         i.id = id;
         i.iconResId = iconResId;
+        i.text = text;
+        return i;
+    }
+
+    public static UItem asButton(int id, Drawable icon, CharSequence text) {
+        UItem i = new UItem(UniversalAdapter.VIEW_TYPE_TEXT, false);
+        i.id = id;
+        i.object = icon;
         i.text = text;
         return i;
     }
@@ -552,7 +576,8 @@ public class UItem extends AdapterWithDiffUtils.Item {
             view == item.view &&
             intValue == item.intValue &&
             longValue == item.longValue &&
-            Objects.equals(object, item.object)
+            Objects.equals(object, item.object) &&
+            Objects.equals(object2, item.object2)
         );
     }
 

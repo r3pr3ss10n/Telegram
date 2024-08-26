@@ -1,11 +1,16 @@
 package org.telegram.ui.Components;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -13,6 +18,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
@@ -22,6 +28,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.ColorUtils;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -49,6 +56,7 @@ import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PremiumPreviewFragment;
 import org.telegram.ui.Stories.recorder.HintView2;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,17 +108,17 @@ public final class BulletinFactory {
 
         MEDIA("MediaSavedHint", Icon.SAVED_TO_GALLERY),
 
-        PHOTO_TO_DOWNLOADS("PhotoSavedToDownloadsHint", R.string.PhotoSavedToDownloadsHint, Icon.SAVED_TO_DOWNLOADS),
-        VIDEO_TO_DOWNLOADS("VideoSavedToDownloadsHint", R.string.VideoSavedToDownloadsHint, Icon.SAVED_TO_DOWNLOADS),
+        PHOTO_TO_DOWNLOADS("PhotoSavedToDownloadsHintLinked", R.string.PhotoSavedToDownloadsHintLinked, Icon.SAVED_TO_DOWNLOADS),
+        VIDEO_TO_DOWNLOADS("VideoSavedToDownloadsHintLinked", R.string.VideoSavedToDownloadsHintLinked, Icon.SAVED_TO_DOWNLOADS),
 
         GIF("GifSavedHint", R.string.GifSavedHint, Icon.SAVED_TO_GIFS),
-        GIF_TO_DOWNLOADS("GifSavedToDownloadsHint", R.string.GifSavedToDownloadsHint, Icon.SAVED_TO_DOWNLOADS),
+        GIF_TO_DOWNLOADS("GifSavedToDownloadsHintLinked", R.string.GifSavedToDownloadsHintLinked, Icon.SAVED_TO_DOWNLOADS),
 
         AUDIO("AudioSavedHint", R.string.AudioSavedHint, Icon.SAVED_TO_MUSIC),
         AUDIOS("AudiosSavedHint", Icon.SAVED_TO_MUSIC),
 
-        UNKNOWN("FileSavedHint", R.string.FileSavedHint, Icon.SAVED_TO_DOWNLOADS),
-        UNKNOWNS("FilesSavedHint", Icon.SAVED_TO_DOWNLOADS);
+        UNKNOWN("FileSavedHintLinked", R.string.FileSavedHintLinked, Icon.SAVED_TO_DOWNLOADS),
+        UNKNOWNS("FilesSavedHintLinked", Icon.SAVED_TO_DOWNLOADS);
 
         private final String localeKey;
         private final int localeRes;
@@ -398,6 +406,10 @@ public final class BulletinFactory {
        return createUsersBulletin(users, text, null, null);
     }
 
+    public Bulletin createUsersBulletin(List<? extends TLObject> users, CharSequence text, CharSequence subtitle) {
+        return createUsersBulletin(users, text, subtitle, null);
+    }
+
     public Bulletin createUsersBulletin(List<? extends TLObject> users, CharSequence text, CharSequence subtitle, UndoObject undoObject) {
         final Bulletin.UsersLayout layout = new Bulletin.UsersLayout(getContext(), subtitle != null, resourcesProvider);
         int count = 0;
@@ -428,8 +440,8 @@ public final class BulletinFactory {
             layout.textView.setMaxLines(1);
             layout.textView.setText(text);
             layout.subtitleView.setText(subtitle);
-            layout.subtitleView.setSingleLine(true);
-            layout.subtitleView.setMaxLines(1);
+            layout.subtitleView.setSingleLine(false);
+            layout.subtitleView.setMaxLines(3);
             if (layout.linearLayout.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
                 int margin = AndroidUtilities.dp(12 + 56 + 2 - (3 - count) * 12);
                 if (count == 1) {
@@ -721,7 +733,13 @@ public final class BulletinFactory {
             layout = new Bulletin.LottieLayout(getContext(), resourcesProvider);
         }
         layout.setAnimation(fileType.icon.resId, fileType.icon.layers);
-        layout.textView.setText(fileType.getText(filesAmount));
+        layout.textView.setText(AndroidUtilities.replaceSingleTag(fileType.getText(filesAmount), () -> {
+            if (LaunchActivity.instance == null || LaunchActivity.instance.isFinishing()) return;
+
+            Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            LaunchActivity.instance.startActivity(intent);
+        }));
         if (fileType.icon.paddingBottom != 0) {
             layout.setIconPaddingBottom(fileType.icon.paddingBottom);
         }
@@ -865,7 +883,7 @@ public final class BulletinFactory {
         return create(layout, Bulletin.DURATION_SHORT);
     }
 
-    private Bulletin create(Bulletin.Layout layout, int duration) {
+    public Bulletin create(Bulletin.Layout layout, int duration) {
         if (fragment != null) {
             return Bulletin.make(fragment, layout, duration);
         } else {
