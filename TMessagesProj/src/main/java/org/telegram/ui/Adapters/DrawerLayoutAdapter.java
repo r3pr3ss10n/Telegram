@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.telegram.messenger.AndroidUtilities;
@@ -46,7 +47,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
     private boolean accountsShown;
     public DrawerProfileCell profileCell;
     private SideMenultItemAnimator itemAnimator;
-    private boolean hasGps;
 
     public DrawerLayoutAdapter(Context context, SideMenultItemAnimator animator, DrawerLayoutContainer drawerLayoutContainer) {
         mContext = context;
@@ -55,11 +55,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
         accountsShown = UserConfig.getActivatedAccountsCount() > 1 && MessagesController.getGlobalMainSettings().getBoolean("accountsShown", true);
         Theme.createCommonDialogResources(context);
         resetItems();
-        try {
-            hasGps = ApplicationLoader.applicationContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
-        } catch (Throwable e) {
-            hasGps = false;
-        }
     }
 
     private int getAccountRowsCount() {
@@ -263,7 +258,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
         int settingsIcon;
         int inviteIcon;
         int helpIcon;
-        int peopleNearbyIcon;
         if (eventType == 0) {
             newGroupIcon = R.drawable.msg_groups_ny;
             //newSecretIcon = R.drawable.msg_secret_ny;
@@ -274,7 +268,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
             settingsIcon = R.drawable.msg_settings_ny;
             inviteIcon = R.drawable.msg_invite_ny;
             helpIcon = R.drawable.msg_help_ny;
-            peopleNearbyIcon = R.drawable.msg_nearby_ny;
         } else if (eventType == 1) {
             newGroupIcon = R.drawable.msg_groups_14;
             //newSecretIcon = R.drawable.msg_secret_14;
@@ -285,7 +278,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
             settingsIcon = R.drawable.msg_settings_14;
             inviteIcon = R.drawable.msg_secret_ny;
             helpIcon = R.drawable.msg_help;
-            peopleNearbyIcon = R.drawable.msg_secret_14;
         } else if (eventType == 2) {
             newGroupIcon = R.drawable.msg_groups_hw;
             //newSecretIcon = R.drawable.msg_secret_hw;
@@ -296,7 +288,6 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
             settingsIcon = R.drawable.msg_settings_hw;
             inviteIcon = R.drawable.msg_invite_hw;
             helpIcon = R.drawable.msg_help_hw;
-            peopleNearbyIcon = R.drawable.msg_secret_hw;
         } else {
             newGroupIcon = R.drawable.msg_groups;
             //newSecretIcon = R.drawable.msg_secret;
@@ -307,16 +298,15 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
             settingsIcon = R.drawable.msg_settings_old;
             inviteIcon = R.drawable.msg_invite;
             helpIcon = R.drawable.msg_help;
-            peopleNearbyIcon = R.drawable.msg_nearby;
         }
         UserConfig me = UserConfig.getInstance(UserConfig.selectedAccount);
         boolean showDivider = false;
         items.add(new Item(16, LocaleController.getString(R.string.MyProfile), R.drawable.left_status_profile));
         if (me != null && me.isPremium()) {
             if (me.getEmojiStatus() != null) {
-                items.add(new Item(15, LocaleController.getString("ChangeEmojiStatus", R.string.ChangeEmojiStatus), R.drawable.msg_status_edit));
+                items.add(new Item(15, LocaleController.getString(R.string.ChangeEmojiStatus), R.drawable.msg_status_edit));
             } else {
-                items.add(new Item(15, LocaleController.getString("SetEmojiStatus", R.string.SetEmojiStatus), R.drawable.msg_status_set));
+                items.add(new Item(15, LocaleController.getString(R.string.SetEmojiStatus), R.drawable.msg_status_set));
             }
             showDivider = true;
         }
@@ -440,11 +430,13 @@ public class DrawerLayoutAdapter extends RecyclerListView.SelectionAdapter {
             actionCell.setError(error);
         }
 
+        @Keep
         public Item onClick(View.OnClickListener listener) {
             this.listener = listener;
             return this;
         }
 
+        @Keep
         public Item withError() {
             this.error = true;
             return this;

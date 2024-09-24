@@ -86,9 +86,9 @@ public class SharedConfig {
 
                     readOnlyStorageDirAlertShowed = true;
                     AlertDialog.Builder dialog = new AlertDialog.Builder(fragment.getParentActivity());
-                    dialog.setTitle(LocaleController.getString("SdCardError", R.string.SdCardError));
-                    dialog.setSubtitle(LocaleController.getString("SdCardErrorDescription", R.string.SdCardErrorDescription));
-                    dialog.setPositiveButton(LocaleController.getString("DoNotUseSDCard", R.string.DoNotUseSDCard), (dialog1, which) -> {
+                    dialog.setTitle(LocaleController.getString(R.string.SdCardError));
+                    dialog.setSubtitle(LocaleController.getString(R.string.SdCardErrorDescription));
+                    dialog.setPositiveButton(LocaleController.getString(R.string.DoNotUseSDCard), (dialog1, which) -> {
 
                     });
                     Dialog dialogFinal = dialog.create();
@@ -285,6 +285,7 @@ public class SharedConfig {
     public static boolean customTabs = true;
     public static boolean inappBrowser = true;
     public static boolean adaptableColorInBrowser = true;
+    public static boolean onlyLocalInstantView = false;
     public static boolean directShare = true;
     public static boolean inappCamera = true;
     public static boolean roundCamera16to9 = true;
@@ -594,6 +595,7 @@ public class SharedConfig {
             customTabs = preferences.getBoolean("custom_tabs", true);
             inappBrowser = preferences.getBoolean("inapp_browser", true);
             adaptableColorInBrowser = preferences.getBoolean("adaptableBrowser", false);
+            onlyLocalInstantView = preferences.getBoolean("onlyLocalInstantView", BuildVars.DEBUG_PRIVATE_VERSION);
             directShare = preferences.getBoolean("direct_share", true);
             shuffleMusic = preferences.getBoolean("shuffleMusic", false);
             playOrderReversed = !shuffleMusic && preferences.getBoolean("playOrderReversed", false);
@@ -609,7 +611,7 @@ public class SharedConfig {
             useSystemEmoji = preferences.getBoolean("useSystemEmoji", false);
             streamMedia = preferences.getBoolean("streamMedia", true);
             saveStreamMedia = preferences.getBoolean("saveStreamMedia", true);
-            pauseMusicOnRecord = preferences.getBoolean("pauseMusicOnRecord", false);
+            pauseMusicOnRecord = preferences.getBoolean("pauseMusicOnRecord", true);
             pauseMusicOnMedia = preferences.getBoolean("pauseMusicOnMedia", false);
             forceDisableTabletMode = preferences.getBoolean("forceDisableTabletMode", false);
             streamAllVideo = preferences.getBoolean("streamAllVideo", BuildVars.DEBUG_VERSION);
@@ -1270,6 +1272,14 @@ public class SharedConfig {
         editor.apply();
     }
 
+    public static void toggleLocalInstantView() {
+        onlyLocalInstantView = !onlyLocalInstantView;
+        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("onlyLocalInstantView", onlyLocalInstantView);
+        editor.apply();
+    }
+
     public static void toggleDirectShare() {
         directShare = !directShare;
         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
@@ -1679,7 +1689,7 @@ public class SharedConfig {
             performanceClass = PERFORMANCE_CLASS_HIGH;
         }
         if (BuildVars.LOGS_ENABLED) {
-            FileLog.d("device performance info selected_class = " + performanceClass + " (cpu_count = " + cpuCount + ", freq = " + maxCpuFreq + ", memoryClass = " + memoryClass + ", android version " + androidVersion + ", manufacture " + Build.MANUFACTURER + ", screenRefreshRate=" + AndroidUtilities.screenRefreshRate + ")");
+            FileLog.d("device performance info selected_class = " + performanceClass + " (cpu_count = " + cpuCount + ", freq = " + maxCpuFreq + ", memoryClass = " + memoryClass + ", android version " + androidVersion + ", manufacture " + Build.MANUFACTURER + ", screenRefreshRate=" + AndroidUtilities.screenRefreshRate + ", screenMaxRefreshRate=" + AndroidUtilities.screenMaxRefreshRate + ")");
         }
 
         return performanceClass;
