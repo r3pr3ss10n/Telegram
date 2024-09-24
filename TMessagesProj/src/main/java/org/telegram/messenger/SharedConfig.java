@@ -287,7 +287,7 @@ public class SharedConfig {
     public static boolean adaptableColorInBrowser = true;
     public static boolean onlyLocalInstantView = false;
     public static boolean directShare = true;
-    public static boolean inappCamera = true;
+    public static boolean inappCamera = false;
     public static boolean roundCamera16to9 = true;
     public static boolean noSoundHintShowed = false;
     public static boolean streamMedia = true;
@@ -323,6 +323,7 @@ public class SharedConfig {
     public static boolean ghost;
     public static boolean noTyping;
     public static boolean noReading;
+    public static boolean forceRearCam;
 
     public static TLRPC.TL_help_appUpdate pendingAppUpdate;
     public static int pendingAppUpdateBuildVersion;
@@ -599,7 +600,7 @@ public class SharedConfig {
             directShare = preferences.getBoolean("direct_share", true);
             shuffleMusic = preferences.getBoolean("shuffleMusic", false);
             playOrderReversed = !shuffleMusic && preferences.getBoolean("playOrderReversed", false);
-            inappCamera = preferences.getBoolean("inappCamera", true);
+            inappCamera = false;
             hasCameraCache = preferences.contains("cameraCache");
             roundCamera16to9 = true;
             repeatMode = preferences.getInt("repeatMode", 0);
@@ -669,6 +670,7 @@ public class SharedConfig {
             ghost = preferences.getBoolean("ghost", false);
             noTyping = preferences.getBoolean("noTyping", false);
             noReading = preferences.getBoolean("noReading", false);
+            forceRearCam = preferences.getBoolean("forceRearCam", false);
             botTabs3DEffect = preferences.getBoolean("botTabs3DEffect", true);
 
             loadDebugConfig(preferences);
@@ -1366,13 +1368,7 @@ public class SharedConfig {
         editor.apply();
     }
 
-    public static void toggleInappCamera() {
-        inappCamera = !inappCamera;
-        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean("inappCamera", inappCamera);
-        editor.apply();
-    }
+    public static void toggleInappCamera() {}
 
     public static void toggleRoundCamera16to9() {
         roundCamera16to9 = !roundCamera16to9;
@@ -1872,6 +1868,14 @@ public class SharedConfig {
         SharedPreferences preferences = MessagesController.getGlobalMainSettings();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("noReading", noReading);
+        editor.apply();
+    }
+
+    public static void toggleForceRearCam() {
+        forceRearCam = !forceRearCam;
+        SharedPreferences preferences = MessagesController.getGlobalMainSettings();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("forceRearCam", forceRearCam);
         editor.apply();
     }
 

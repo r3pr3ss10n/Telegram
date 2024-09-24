@@ -5997,6 +5997,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
         sendRoundEnabled = true;
         sendVoiceEnabled = true;
         boolean isChannel = false;
+
         if (DialogObject.isChatDialog(dialog_id)) {
             TLRPC.Chat chat = accountInstance.getMessagesController().getChat(-dialog_id);
             isChannel = ChatObject.isChannel(chat) && !chat.megagroup;
@@ -6006,9 +6007,7 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
             sendRoundEnabled = ChatObject.canSendRoundVideo(chat);
             sendVoiceEnabled = ChatObject.canSendVoice(chat);
         }
-        if (!SharedConfig.inappCamera) {
-            hasRecordVideo = false;
-        }
+
         boolean currentModeVideo = false;
         if (hasRecordVideo) {
             if (SharedConfig.hasCameraCache) {

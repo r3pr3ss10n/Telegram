@@ -38,6 +38,7 @@ public class ForkSettingsActivity extends BaseFragment {
     private int ghostRow;
     private int noTypingRow;
     private int noReadingRow;
+    private int forceRearCamRow;
 
     @Override
     public boolean onFragmentCreate() {
@@ -103,6 +104,10 @@ public class ForkSettingsActivity extends BaseFragment {
                 SharedConfig.toggleNoReading();
                 ((TextCheckCell) view).setChecked(SharedConfig.noReading);
             }
+            if (position == forceRearCamRow && view instanceof TextCheckCell) {
+                SharedConfig.toggleForceRearCam();
+                ((TextCheckCell) view).setChecked(SharedConfig.forceRearCam);
+            }
         });
     }
 
@@ -128,7 +133,7 @@ public class ForkSettingsActivity extends BaseFragment {
 
         @Override
         public int getItemViewType(int position) {
-            if (position == ghostRow || position == noTypingRow || position == noReadingRow) {
+            if (position == ghostRow || position == noTypingRow || position == noReadingRow || position == forceRearCamRow) {
                 return 3; // TextCheckCell
             } else if (position == sectionRow1) {
                 return 4; // HeaderCell
@@ -195,6 +200,11 @@ public class ForkSettingsActivity extends BaseFragment {
                 String info = LocaleController.getString("NoReadingInfo", R.string.NoReadingInfo);
                 textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("noReading", false), true, false);
             }
+            if (position == forceRearCamRow) {
+                String title = LocaleController.getString("ForceRearCam", R.string.ForceRearCam);
+                String info = LocaleController.getString("ForceRearCamDesc", R.string.ForceRearCamDesc);
+                textCell.setTextAndValueAndCheck(title, info, preferences.getBoolean("forceRearCam", false), true, false);
+            }
         }
 
         private void bindHeaderCell(RecyclerView.ViewHolder holder, int position) {
@@ -207,7 +217,7 @@ public class ForkSettingsActivity extends BaseFragment {
         @Override
         public boolean isEnabled(RecyclerView.ViewHolder holder) {
             int position = holder.getAdapterPosition();
-            return position == ghostRow || position == noReadingRow || position == noTypingRow;
+            return position == ghostRow || position == noReadingRow || position == noTypingRow || position == forceRearCamRow;
         }
     }
 
